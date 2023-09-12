@@ -16,10 +16,10 @@
 - Micronaut
 
 ## Build and Obfuscate jar
-`
+```
 gradle clean build
 gradle proguard
-`
+```
 ## Run the jar
 `
 java -jar /build/libs/demo-0.1-all-obfs.jar
