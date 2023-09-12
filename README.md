@@ -10,7 +10,7 @@
 - [GraalVM Gradle Plugin documentation](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html)
 - [Shadow Gradle Plugin](https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow)
 
-## Pre-requisites
+## Prerequisites
 - Java 17
 - Gradle
 - Micronaut
