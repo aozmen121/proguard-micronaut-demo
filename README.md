@@ -10,16 +10,16 @@
 - [GraalVM Gradle Plugin documentation](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html)
 - [Shadow Gradle Plugin](https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow)
 
-## Pre-requisites
+## Prerequisites
 - Java 17
 - Gradle
 - Micronaut
 
 ## Build and Obfuscate jar
-`
+```
 gradle clean build
 gradle proguard
-`
+```
 ## Run the jar
 `
 java -jar /build/libs/demo-0.1-all-obfs.jar
