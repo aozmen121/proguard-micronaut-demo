@@ -1,5 +1,6 @@
 package com.example.controller
 
+import com.example.data.CoolDevice
 import com.example.service.SomeService
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Controller
@@ -31,13 +32,12 @@ class TestController(private val someService: SomeService) {
             responseCode = "200",
             content = [Content(
                 mediaType = "text/plain",
-                schema = Schema(implementation = String::class)
+                schema = Schema(implementation = CoolDevice::class)
             )]
         ),
     )
-    fun hello(): HttpResponse<String> {
-        someService.getHelloWorldValue()
+    fun hello(): HttpResponse<CoolDevice> {
         println("Got it Working")
-        return HttpResponse.ok("HelloWorld")
+        return HttpResponse.ok(someService.getHelloWorldValue())
     }
 }
