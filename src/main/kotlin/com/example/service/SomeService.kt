@@ -6,7 +6,7 @@ import jakarta.inject.Singleton
 @Singleton
 class SomeService {
 
-    fun getHelloWorldValue(): CoolDevice {
+    suspend fun getHelloWorldValue(): CoolDevice {
         return CoolDevice(deviceId = "123", status = "alive")
     }
 }

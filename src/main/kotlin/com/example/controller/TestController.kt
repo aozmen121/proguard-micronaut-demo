@@ -2,6 +2,7 @@ package com.example.controller
 
 import com.example.data.CoolDevice
 import com.example.service.SomeService
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 @Controller("/api/v1")
@@ -20,7 +22,10 @@ import java.util.*
     ApiResponse(responseCode = "500", description = "Sorry my fault")
 )
 @Tag(name = "Some Controller")
-class TestController(private val someService: SomeService) {
+class TestController(
+    private val someService: SomeService,
+    private val objectMapper: ObjectMapper
+) {
 
     @Get("/hello")
     @Operation(
@@ -38,6 +43,9 @@ class TestController(private val someService: SomeService) {
     )
     fun hello(): HttpResponse<CoolDevice> {
         println("Got it Working")
-        return HttpResponse.ok(someService.getHelloWorldValue())
+        val response = runBlocking { someService.getHelloWorldValue() }
+        val jsonData = objectMapper.writeValueAsString(response)
+        println("Json Data: $jsonData")
+        return HttpResponse.ok(response)
     }
 }
