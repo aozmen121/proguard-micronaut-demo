@@ -9,6 +9,6 @@ class JacksonMapperFactory {
 
     @Singleton
     fun createObjectMapper(): ObjectMapper {
-        return ObjectMapper().findAndRegisterModules()
+        return ObjectMapper()
     }
 }

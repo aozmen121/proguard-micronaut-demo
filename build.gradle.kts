@@ -1,10 +1,15 @@
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.6.21"
-    id("org.jetbrains.kotlin.kapt") version "1.6.21"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.6.21"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("io.micronaut.application") version "3.7.10"
+    kotlin("jvm") version "1.6.10"
+    kotlin("kapt") version "1.6.10"
+    kotlin("plugin.allopen") version "1.6.10"
+    kotlin("plugin.serialization") version "1.6.10"
+
+    id("com.github.johnrengelman.shadow") version "7.1.0"
+    id("io.micronaut.application") version "3.6.4"
+
+    jacoco
+    `maven-publish`
 }
 
 version = "0.1"
@@ -26,26 +31,58 @@ repositories {
 }
 
 dependencies {
-    kapt("io.micronaut:micronaut-http-validation")
-    kapt("io.micronaut.openapi:micronaut-openapi")
-    kapt("io.micronaut.serde:micronaut-serde-processor")
-    implementation("io.micronaut:micronaut-aop")
-    implementation("io.micronaut:micronaut-http-client")
-    implementation("io.micronaut.graphql:micronaut-graphql")
-    implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
-    implementation(platform("com.fasterxml.jackson:jackson-bom:2.14.0"))
-    implementation("com.fasterxml.jackson.core:jackson-annotations")
-    implementation("com.fasterxml.jackson.core:jackson-databind")
-    implementation("io.swagger.core.v3:swagger-annotations")
-    implementation("jakarta.annotation:jakarta.annotation-api")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+    // Constraints
+    constraints {
+        kapt("org.jsoup:jsoup:1.15.3") {
+            because("micronaut-openapi 4.5.2 pulls in v1.11.3 which has a high severity vulnerability")
+        }
+    }
 
+    implementation(platform(kotlin("bom")))
+    implementation(kotlin("stdlib"))
+    implementation(kotlin("reflect"))
+
+    implementation("javax.annotation:javax.annotation-api:1.3.2")
+
+    // Jackson
+    implementation(platform("com.fasterxml.jackson:jackson-bom:2.14.0"))
+    implementation("com.fasterxml.jackson.core:jackson-databind")
+    implementation("com.fasterxml.jackson.core:jackson-annotations")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    implementation("com.auth0:java-jwt:3.19.1")
+
+    implementation("io.lettuce:lettuce-core:6.1.8.RELEASE")
+
+    implementation("org.apache.kafka:kafka-clients:3.2.3")
+
+    // Micronaut
+    kapt("io.micronaut:micronaut-inject-java")
+    kapt("io.micronaut.openapi:micronaut-openapi")
+
+    implementation("io.micronaut:micronaut-validation")
+    implementation("io.micronaut:micronaut-runtime")
+    implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut:micronaut-management")
+
+    implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
+
+    implementation("io.micronaut.reactor:micronaut-reactor")
+
+    implementation("io.swagger.core.v3:swagger-annotations")
+
+    // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1-native-mt")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx3:1.6.1-native-mt")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
-    runtimeOnly("ch.qos.logback:logback-classic")
+    // externals
+    implementation("com.google.guava:guava:30.0-jre")
+    implementation("org.apache.commons:commons-math3:3.6.1")
+    implementation("io.grpc:grpc-kotlin-stub:1.3.0")
+    implementation("io.grpc:grpc-protobuf:1.50.2")
+
 }
 
 application {
@@ -67,22 +104,13 @@ tasks {
         }
     }
 }
-graalvmNative.toolchainDetection.set(false)
+
 micronaut {
     runtime("netty")
     testRuntime("kotest5")
     processing {
         incremental(true)
         annotations("com.example.*")
-    }
-}
-
-
-
-configurations.all {
-    resolutionStrategy.dependencySubstitution {
-        substitute(module("io.micronaut:micronaut-jackson-databind"))
-            .using(module("io.micronaut.serde:micronaut-serde-jackson:1.5.3"))
     }
 }
 
